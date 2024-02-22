@@ -150,6 +150,8 @@ def write_smt_file(solver: Solver,
         elif specification_type == SpecificationType.final_state_vector:
             # Final state vector is given directly
             if isinstance(state_sequence, StateSequence):
+                # for i in range(len(state_sequence.states)):
+                #     print('state_sequence', i, state_sequence.states[i])
                 if is_equality_specification:
                     # Last state may not be equal to specification
                     if isinstance(state_sequence.states[-1], List) and isinstance(state_sequence.states[-1][0], List):
@@ -157,6 +159,8 @@ def write_smt_file(solver: Solver,
                         for state_element in state_sequence.states[-1]:
                             solver.add(state_not_equals(state_element, specification))
                     else:
+                        # print('last state_sequence', state_sequence.states[-1])
+                        # print('specification', specification)
                         # No Measurements
                         solver.add(
                             state_not_equals(state_sequence.states[-1], specification))
