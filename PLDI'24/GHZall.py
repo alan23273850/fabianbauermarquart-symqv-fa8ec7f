@@ -21,8 +21,8 @@ def prove_GHZall(q: int):
 
     # Build specification
     possible_final_state_vectors = []
-    final_state_vector = [0] * (2 ** q)
-    for i in range(2 ** (q-1)):
+    final_state_vector = [0] * (1 << q)
+    for i in range(1 << (q-1)):
         final_state_vector[i] = 1.0 / sqrt(2)
         final_state_vector[2**q-1 - i] = 1.0 / sqrt(2)
         possible_final_state_vectors.append(final_state_vector.copy()) # .copy() is IMPORTANT !!!
