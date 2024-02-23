@@ -2,13 +2,16 @@
 import sys; sys.path.append('..')
 import time
 import numpy as np
-from math import pi, asin
+from math import pi, asin, sqrt
 from symqv.lib.expressions.qbit import Qbits
 from symqv.lib.models.circuit import Circuit, Method
 from symqv.lib.operations.gates import X, H, CNOT, CCX, CZ
 from symqv.lib.solver import SpecificationType
 from symqv.lib.expressions.complex import Complex
 from z3 import And
+
+aH = {3: 11 / pow(sqrt(2), 7)}
+aL = {3: -1 / pow(sqrt(2), 7)}
 
 def one_iteration(qbits, n: int, q: int):
     ans = []
@@ -88,13 +91,13 @@ def prove_GroverSingle(n: int):
         s += i % 2
     for i, num in enumerate(nonzero_indices):
         if i == s:
-            final_state_vector[num] = Complex('aH')
+            final_state_vector[num] = aH[n] #Complex('aH')
         else:
-            final_state_vector[num] = Complex('aL')
+            final_state_vector[num] = aL[n] #Complex('aL')
     circuit.set_specification(final_state_vector, SpecificationType.final_state_vector)
-    circuit.solver.add(Complex('aH').r * Complex('aH').r > Complex('aL').r * Complex('aL').r)
-    circuit.solver.add(And(-circuit.delta <= Complex('aH').i, Complex('aH').i <= circuit.delta))
-    circuit.solver.add(And(-circuit.delta <= Complex('aL').i, Complex('aL').i <= circuit.delta))
+    # circuit.solver.add(Complex('aH').r * Complex('aH').r > Complex('aL').r * Complex('aL').r)
+    # circuit.solver.add(And(-circuit.delta <= Complex('aH').i, Complex('aH').i <= circuit.delta))
+    # circuit.solver.add(And(-circuit.delta <= Complex('aL').i, Complex('aL').i <= circuit.delta))
 
     # Prove
     print(circuit.prove(method=Method.state_model))#, dump_solver_output = True))

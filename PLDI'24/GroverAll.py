@@ -2,13 +2,16 @@
 import sys; sys.path.append('..')
 import time
 import numpy as np
-from math import pi, asin
+from math import pi, asin, sqrt
 from symqv.lib.expressions.qbit import Qbits
 from symqv.lib.models.circuit import Circuit, Method
 from symqv.lib.operations.gates import X, H, CNOT, CCX, CZ
 from symqv.lib.solver import SpecificationType
 from symqv.lib.expressions.complex import Complex
 from z3 import And
+
+aH = {3: 11 / pow(sqrt(2), 7)}
+aL = {3: -1 / pow(sqrt(2), 7)}
 
 def one_iteration(qbits, n: int, q: int):
     ans = []
@@ -91,14 +94,14 @@ def prove_GroverAll(n: int):
         base = s << (q-n)
         for i, num in enumerate(nonzero_indices):
             if i == s:
-                final_state_vector[base + num] = Complex('aH')
+                final_state_vector[base + num] = aH[n] #Complex('aH')
             else:
-                final_state_vector[base + num] = Complex('aL')
+                final_state_vector[base + num] = aL[n] #Complex('aL')
         possible_final_state_vectors.append(final_state_vector.copy()) # .copy() is IMPORTANT !!!
     circuit.set_specification(possible_final_state_vectors, SpecificationType.possible_final_state_vectors)
-    circuit.solver.add(Complex('aH').r * Complex('aH').r > Complex('aL').r * Complex('aL').r)
-    circuit.solver.add(And(-circuit.delta <= Complex('aH').i, Complex('aH').i <= circuit.delta))
-    circuit.solver.add(And(-circuit.delta <= Complex('aL').i, Complex('aL').i <= circuit.delta))
+    # circuit.solver.add(Complex('aH').r * Complex('aH').r > Complex('aL').r * Complex('aL').r)
+    # circuit.solver.add(And(-circuit.delta <= Complex('aH').i, Complex('aH').i <= circuit.delta))
+    # circuit.solver.add(And(-circuit.delta <= Complex('aL').i, Complex('aL').i <= circuit.delta))
 
     # Prove
     print(circuit.prove(method=Method.state_model))#, dump_solver_output = True))
