@@ -84,6 +84,23 @@ def state_equals(psi: List, psi_prime: List):
 
     return And(elements)
 
+def state_almost_equals(psi: List, psi_prime: List, delta: float = 0.0001):
+    if len(psi) != len(psi_prime):
+        raise Exception(
+            f'States are not the same dimension, first is dimension {len(psi)}, second is dimension {len(psi_prime)}.')
+    elements = []
+    for i in range(len(psi)):
+        if isinstance(psi_prime[i], ComplexVal):
+            x = psi_prime[i]
+        else:
+            x = ComplexVal(psi_prime[i])
+        if isinstance(psi[i], ComplexVal):
+            y = psi[i]
+        else:
+            y = ComplexVal(psi[i])
+        elements.append(And(x.r - delta <= y.r, y.r <= x.r + delta,
+                            x.i - delta <= y.i, y.i <= x.i + delta))
+    return And(elements)
 
 def state_equals_phase_oracle(psi: List, psi_prime: List, oracle_value: int):
     if len(psi) != len(psi_prime):

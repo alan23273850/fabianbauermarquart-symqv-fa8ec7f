@@ -17,7 +17,7 @@ from symqv.lib.globals import precision_format
 from symqv.lib.models.qbit_sequence import QbitSequence
 from symqv.lib.models.state_sequence import StateSequence
 from symqv.lib.utils.arithmetic import state_not_equals, matrix_vector_multiplication, state_equals, qbit_kron_n_ary, \
-    qbit_isclose_to_value
+    qbit_isclose_to_value, state_almost_equals
 from symqv.lib.utils.helpers import build_qbit_constraints, to_complex_matrix, pi
 
 z3_path = '/usr/local/bin/z3'
@@ -37,6 +37,7 @@ else:
 class SpecificationType(Enum):
     transformation_matrix = 'transformation_matrix'
     final_state_vector = 'final_state_vector'
+    possible_final_state_vectors = 'possible_final_state_vectors'
     equality_pair = 'equality_pair'
     equality_pair_list = 'equality_pair_list',
     final_state_qbits = 'final_state_qbits'
@@ -172,6 +173,17 @@ def write_smt_file(solver: Solver,
                     else:
                         # No Measurements
                         solver.add(state_equals(state_sequence.states[-1], specification))
+            else:
+                raise Exception('QbitSequence is not supported for specification type final state vector.')
+        elif specification_type == SpecificationType.possible_final_state_vectors:
+            if isinstance(state_sequence, StateSequence):
+                assert(is_equality_specification)
+                assert(not(isinstance(state_sequence.states[-1], List) and isinstance(state_sequence.states[-1][0], List)))
+                disjunction = []
+                for possible_final_state_vector in specification:
+                    disjunction.append(state_equals(state_sequence.states[-1], possible_final_state_vector))
+                    # disjunction.append(state_almost_equals(state_sequence.states[-1], possible_final_state_vector, delta))
+                solver.add(Not(Or(disjunction)))
             else:
                 raise Exception('QbitSequence is not supported for specification type final state vector.')
         elif specification_type == SpecificationType.transformation_matrix:
