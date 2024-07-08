@@ -49,11 +49,4 @@ def prove_BVall(n: int):
 
 
 if __name__ == "__main__":
-    times = []
-
-    for _ in range(1):
-        start = time.time()
-        prove_BVall(int(sys.argv[1]))
-        times.append(time.time() - start)
-
-    print(f'Runtime:', np.mean(times))
+    prove_BVall(int(sys.argv[1]))

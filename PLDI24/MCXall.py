@@ -55,11 +55,4 @@ def prove_MCXall(n: int):
     # but the imaginary parts should be zero!
 
 if __name__ == "__main__":
-    times = []
-
-    for _ in range(1):
-        start = time.time()
-        prove_MCXall(int(sys.argv[1]))
-        times.append(time.time() - start)
-
-    print(f'Runtime:', np.mean(times))
+    prove_MCXall(int(sys.argv[1]))

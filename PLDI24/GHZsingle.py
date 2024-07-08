@@ -20,18 +20,11 @@ def prove_GHZsingle(q: int):
     # circuit.execute(True)
 
     # Build specification
-    circuit.set_specification([1/sqrt(2)] + [0] * ((1 << q) - 2) + [1/sqrt(2)], SpecificationType.final_state_vector)
+    circuit.set_specification([1/sqrt(2)] + [0 for _ in range((1 << q) - 2)] + [1/sqrt(2)], SpecificationType.final_state_vector)
 
     # Prove
     print(circuit.prove(method=Method.state_model))#, dump_solver_output = True))
 
 
 if __name__ == "__main__":
-    times = []
-
-    for _ in range(1):
-        start = time.time()
-        prove_GHZsingle(int(sys.argv[1]))
-        times.append(time.time() - start)
-
-    print(f'Runtime:', np.mean(times))
+    prove_GHZsingle(int(sys.argv[1]))

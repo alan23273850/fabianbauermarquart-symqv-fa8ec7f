@@ -32,11 +32,4 @@ def prove_H2all(q: int):
 
 
 if __name__ == "__main__":
-    times = []
-
-    for _ in range(1):
-        start = time.time()
-        prove_H2all(int(sys.argv[1]))
-        times.append(time.time() - start)
-
-    print(f'Runtime:', np.mean(times))
+    prove_H2all(int(sys.argv[1]))

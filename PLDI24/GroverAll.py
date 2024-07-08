@@ -1,17 +1,13 @@
 #!/usr/bin/python3
 import sys; sys.path.append('..')
-import time
-import numpy as np
 from math import pi, asin, sqrt
 from symqv.lib.expressions.qbit import Qbits
 from symqv.lib.models.circuit import Circuit, Method
 from symqv.lib.operations.gates import X, H, CNOT, CCX, CZ
 from symqv.lib.solver import SpecificationType
-from symqv.lib.expressions.complex import Complex
-from z3 import And
 
-aH = {3: 11 / pow(sqrt(2), 7)}
-aL = {3: -1 / pow(sqrt(2), 7)}
+aH = {3: 11 / pow(sqrt(2), 7), 6: 133988401 / pow(2, 27), 7: 12412280691169 / pow(sqrt(2), 87), 8: 75555863006653472909761 / pow(2, 76), 9: -15034347071300495523371427226121933183 / pow(sqrt(2), 247), 10: -51408163609015342607074675483845466135738782582421858486334207 / pow(2, 205)}
+aL = {3: -1 / pow(sqrt(2), 7), 6: -988079 / pow(2, 27), 7: 73054448161 / pow(sqrt(2), 87), 8: 34433006489313897025 / pow(2, 76), 9: -15629794375924256137689018495406207 / pow(sqrt(2), 247), 10: 37317028493000746132194989664756306857260930471704364830465 / pow(2, 205)}
 
 def one_iteration(qbits, n: int, q: int):
     ans = []
@@ -88,7 +84,7 @@ def prove_GroverAll(n: int):
         nonzero_indices.append(a)
     #############################
     possible_final_state_vectors = []
-    final_state_vector_backup = [0] * (1 << q)
+    final_state_vector_backup = [0 for _ in range(1 << q)]
     for s in range(1 << n):
         final_state_vector = final_state_vector_backup
         base = s << (q-n)
@@ -108,11 +104,4 @@ def prove_GroverAll(n: int):
 
 
 if __name__ == "__main__":
-    times = []
-
-    for _ in range(1):
-        start = time.time()
-        prove_GroverAll(int(sys.argv[1]))
-        times.append(time.time() - start)
-
-    print(f'Runtime:', np.mean(times))
+    prove_GroverAll(int(sys.argv[1]))
